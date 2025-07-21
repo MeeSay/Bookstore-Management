@@ -1,6 +1,6 @@
-import React, {useState} from "react";
+import React, { useEffect, useState } from "react";
 import "./HomePage.css"; // Assuming you have a CSS file for styling
-
+import axios from "axios";
 const ImportBook = () => {
   const [name, setName] = useState("");
   const [quantity, setQuantity] = useState("");
@@ -9,6 +9,41 @@ const ImportBook = () => {
   const [category, setCategory] = useState("");
   const [position, setPosition] = useState("");
 
+  const [error, setError] = useState("");
+  useEffect(() => {
+    setError("");
+  }, [name, quantity, cost, price, category, position]);
+
+
+  const handleImport = (e) => {
+    e.preventDefault();
+    if (!name || !quantity || !cost || !price || !category || !position) {
+      // Kiểm tra xem tất cả các trường có được nhập hay không
+      setError("Không được để trống tất cả các trường");
+      return;
+    }
+
+    if (error === "") {
+      axios
+        .post("http://localhost:3001/importbook", {
+          name,
+          quantity,
+          cost,
+          price,
+          category,
+          position,
+        })
+        .then((res) => {
+          if (res.data.message === "Database error") {
+            console.log("Database error:", res.data.error);
+            return;
+          }
+          console.log("Import successful:", res.data);
+        })
+        .catch((err) => console.log("Axios error:", err));
+    }
+    setError(""); // Reset error message after handling
+  };
   return (
     <div>
       <div className="title">Quản lý sách</div>
@@ -61,13 +96,10 @@ const ImportBook = () => {
             autoComplete="off"
             onChange={(e) => setPosition(e.target.value)}
           />
-
-          <button>Thêm sách</button>
+          <button type="submit" onClick={handleImport}>Thêm sách</button>
         </div>
 
-        <div className="import-right">
-          Table books
-        </div>
+        <div className="import-right">Table books</div>
       </div>
     </div>
   );

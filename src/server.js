@@ -47,3 +47,14 @@ app.post("/login", (req, res) => {
     }
   });
 });
+
+app.post("/importbook", (req, res) => {
+  const sql = "INSERT INTO book (name, quantity, cost, price, category, position) VALUES (?, ?, ?, ?, ?, ?)";
+  const values = [req.body.name, req.body.quantity, req.body.cost, req.body.price, req.body.category, req.body.position];
+  db.query(sql, values, (err, data) => {
+    if (err) {
+      return res.json({ message: "Database error", error: err.message });
+    }
+    return res.json({ message: "Import successful", data });
+  });
+});
