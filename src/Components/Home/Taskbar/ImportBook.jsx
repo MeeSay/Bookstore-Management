@@ -9,11 +9,21 @@ const ImportBook = () => {
   const [category, setCategory] = useState("");
   const [position, setPosition] = useState("");
 
+  const [books, setBooks] = useState([]);
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:3001/getBooks") 
+      .then((res) => {
+        setBooks(res.data); //API trả về mảng sách
+      })
+      .catch((err) => console.log("Lỗi khi lấy dữ liệu:", err));
+  }, []);
+
   useEffect(() => {
     setError("");
   }, [name, quantity, cost, price, category, position]);
-
 
   const handleImport = (e) => {
     e.preventDefault();
@@ -96,10 +106,40 @@ const ImportBook = () => {
             autoComplete="off"
             onChange={(e) => setPosition(e.target.value)}
           />
-          <button type="submit" onClick={handleImport}>Thêm sách</button>
+          <button type="submit" onClick={handleImport}>
+            Thêm sách
+          </button>
         </div>
 
-        <div className="import-right">Table books</div>
+        <div className="import-right">
+          <div className="small-title">Danh sách sách</div>
+          <div className="table">
+            <table>
+              <thead>
+                <tr>
+                  <th>Tên</th>
+                  <th>Số lượng</th>
+                  <th>Giá nhập</th>
+                  <th>Giá bán</th>
+                  <th>Vị trí kệ</th>
+                  <th>Thể loại</th>
+                </tr>
+              </thead>
+              <tbody>
+                {books.map((book, index) => (
+                  <tr key={index}>
+                    <td>{book.name}</td>
+                    <td>{book.quantity}</td>
+                    <td>{book.cost}</td>
+                    <td>{book.price}</td>
+                    <td>{book.position}</td>
+                    <td>{book.category}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
     </div>
   );

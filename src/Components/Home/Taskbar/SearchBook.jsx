@@ -36,6 +36,10 @@ const SearchBook = () => {
             console.log("Database error:", res.data.error);
             return;
           }
+          if(res.data.message === "No books found") {
+            setError("Không tìm thấy sách nào");
+            return;
+          }
           setBooks(res.data.books); // Giả sử API trả về mảng sách tìm được
         })
         .catch((err) => console.log("Axios error:", err));

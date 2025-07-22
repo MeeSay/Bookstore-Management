@@ -1,10 +1,17 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
+import "./HomePage.css"; // Assuming you have a CSS file for styling
+import axios from "axios";
 
 const CreatePromotion = () => {
   const [name, setName] = useState("");
   const [detail, setDetail] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    setError("");
+  }, [name, detail, startDate, endDate]);
 
   return (
     <div>
