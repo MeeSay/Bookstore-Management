@@ -58,3 +58,59 @@ app.post("/importbook", (req, res) => {
     return res.json({ message: "Import successful", data });
   });
 });
+
+app.post("/addCustomer", (req, res) => {
+  const sql = "INSERT INTO customer (name, phone, address) VALUES (?, ?, ?)";
+  const values = [req.body.name, req.body.phone, req.body.address];
+  db.query(sql, values, (err, data) => {
+    if (err) {
+      return res.json({ message: "Database error", error: err.message });
+    }
+    return res.json({ message: "Customer added successfully", data });
+  });
+});
+
+app.get("/getCustomers", (req, res) => {
+  const sql = "SELECT * FROM customer";
+  db.query(sql, (err, data) => {
+    if (err) {
+      return res.json({ message: "Database error", error: err.message });
+    }
+    return res.json(data);
+  });
+});
+
+app.post("/searchCustomer", (req, res) => {
+  const sql = "SELECT * FROM customer WHERE name LIKE ?";
+  const searchName = `%${req.body.searchCustomer}%`;
+  db.query(sql, [searchName], (err, data) => {
+    if (err) {
+      return res.json({ message: "Database error", error: err.message });
+    }
+    return res.json({ customers: data });
+  });
+});
+
+app.get("/getBooks", (req, res) => {
+  const sql = "SELECT * FROM book";
+  db.query(sql, (err, data) => {
+    if (err) {
+      return res.json({ message: "Database error", error: err.message });
+    }
+    return res.json(data);
+  });
+});
+
+app.post("/searchBook", (req, res) => {
+  const sql = "SELECT * FROM book WHERE name LIKE ?";
+  const searchName = `%${req.body.searchBook}%`;
+  db.query(sql, [searchName], (err, data) => {
+    if (err) {
+      return res.json({ message: "Database error", error: err.message });
+    }
+    if(data.length === 0) {
+      return res.json({ message: "No books found" });
+    }
+    return res.json({ books: data });
+  });
+});

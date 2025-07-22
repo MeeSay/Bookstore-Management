@@ -49,6 +49,17 @@ body {
   padding: 20px;
 }
 
+.small-title {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 30px;
+  color: #333333;
+  font-family: "Roboto", sans-serif;
+  padding: 20px;
+  padding-top: 0px;
+}
+
 .text {
   font-size: 18px;
   color: #333333;
@@ -113,7 +124,6 @@ body {
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  padding-top: 100px;
   gap: 30px;
 }
 .search input {
@@ -142,7 +152,10 @@ body {
   display: flex;
   align-items: center;
   padding: 20px;
+  padding-top: 0px;
   margin-left: 30px;
+  gap: 50px;
+  height: 100%;
 }
 .import-left {
   display: flex;
@@ -180,4 +193,46 @@ body {
   align-items: center;
   flex-direction: column;
   width: 100%;
+}
+
+.table {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: 100%;
+  height: 500px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 20px;
+}
+
+table {
+  margin-top: 20px;
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: block;
+}
+
+th {
+  position: sticky;
+  top: 0;
+  padding: 12px;
+  border: 2px solid #333333;
+  width: 200px;
+  background-color: azure;
+}
+
+td {
+  padding: 12px;
+  border: 2px solid #333333;
+  text-align: left;
+  width: 200px;
+  background-color: azure;
+}
+
+tbody {
+  width: 100%;
+  max-height: 500px;
 }/*# sourceMappingURL=HomePage.css.map */

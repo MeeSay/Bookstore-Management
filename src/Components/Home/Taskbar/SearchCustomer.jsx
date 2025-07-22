@@ -1,12 +1,54 @@
-import React from "react";
+import React, {useState, useEffect} from "react";
+import "./HomePage.css"; // Assuming you have a CSS file for styling
+import axios from "axios";
 
 const SearchCustomer = () => {
+  const [customers, setCustomers] = useState([]);
+  const [searchCustomer, setSearchCustomer] = useState("");
+  const [error, setError] = useState("");
+  useEffect(() => {
+    axios
+      .get("http://localhost:3001/getCustomers") // Thay bằng endpoint thực tế
+      .then((res) => {
+        setCustomers(res.data); // Giả sử API trả về mảng khách hàng
+      })
+      .catch((err) => console.log("Lỗi khi lấy dữ liệu:", err));
+  }, []);
+
+  useEffect(() => {
+    setError("");}, [searchCustomer]);
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    // Implement search logic here
+    if (!searchCustomer) {
+      // Kiểm tra xem tất cả các trường có được nhập hay không
+      setError("Hãy nhập tên khách hàng cần tìm");
+      return;
+    }
+    // console.log("Searching for customer:", searchCustomer);
+    if(error === "") {
+      axios
+        .post("http://localhost:3001/searchCustomer", {searchCustomer})
+        .then((res) => {
+          if (res.data.message === "Database error") {
+            console.log("Database error:", res.data.error);
+            return;
+          }
+          setCustomers(res.data.customers); // Giả sử API trả về mảng khách hàng tìm được
+        })
+        .catch((err) => console.log("Axios error:", err));
+    }
+
+    setError(""); // Reset error message
+  }
+
   return (
     <div className="search">
       <div className="title">Search</div>
       <div className="search-input">
-        <input type="text" placeholder="Search for a customer..." />
-        <button>
+        <input type="text" placeholder="Search for a customer..." onChange={(e) => setSearchCustomer(e.target.value)} />
+        <button type="submit" onClick={handleSearch}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             height="24px"
@@ -19,7 +61,29 @@ const SearchCustomer = () => {
           </svg>
         </button>
       </div>
-      <div className="search-customer">table of customer here</div>
+      {error && <div className="error-message">{error}</div>}
+      <div className="search-customer">
+        <div className="table">
+          <table>
+            <thead>
+              <tr>
+                <th>Tên</th>
+                <th>Số điện thoại</th>
+                <th>Địa chỉ</th>
+              </tr>
+            </thead>
+            <tbody>
+              {customers.map((customer, index) => (
+                <tr key={index}>
+                  <td>{customer.name}</td>
+                  <td>{customer.phone}</td>
+                  <td>{customer.address}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   );
 };

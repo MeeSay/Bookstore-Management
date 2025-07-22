@@ -1,12 +1,54 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import "./HomePage.css"; // Assuming you have a CSS file for styling
+import axios from "axios";
 
 const SearchBook = () => {
+  const [books, setBooks] = useState([]);
+  const [searchBook, setSearchBook] = useState("");
+  const [error, setError] = useState("");
+  useEffect(() => {
+    axios
+      .get("http://localhost:3001/getBooks") // Thay bằng endpoint thực tế
+      .then((res) => {
+        setBooks(res.data); // Giả sử API trả về mảng sách
+      })
+      .catch((err) => console.log("Lỗi khi lấy dữ liệu:", err));
+  }, []);
+
+  useEffect(() => {
+    setError("");
+  }, [searchBook]);
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    // Implement search logic here
+    if (!searchBook) {
+      // Kiểm tra xem tất cả các trường có được nhập hay không
+      setError("Hãy nhập tên sách cần tìm");
+      return;
+    }
+    // console.log("Searching for customer:", searchCustomer);
+    if (error === "") {
+      axios
+        .post("http://localhost:3001/searchBook", { searchBook })
+        .then((res) => {
+          if (res.data.message === "Database error") {
+            console.log("Database error:", res.data.error);
+            return;
+          }
+          setBooks(res.data.books); // Giả sử API trả về mảng sách tìm được
+        })
+        .catch((err) => console.log("Axios error:", err));
+    }
+
+    setError(""); // Reset error message
+  };
   return (
     <div className="search">
       <div className="title">Search</div>
       <div className="search-input">
-        <input type="text" placeholder="Search for a book..." />
-        <button>
+        <input type="text" placeholder="Search for a book..." onChange={(e) => setSearchBook(e.target.value)} />
+        <button type="submit" onClick={handleSearch}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             height="24px"
@@ -19,8 +61,34 @@ const SearchBook = () => {
           </svg>
         </button>
       </div>
+      {error && <div className="error-message">{error}</div>}
       <div className="search-book">
-        table of book here
+        <div className="table">
+          <table>
+            <thead>
+              <tr>
+                <th>Tên</th>
+                <th>Số lượng</th>
+                <th>Giá nhập</th>
+                <th>Giá bán</th>
+                <th>Vị trí kệ</th>
+                <th>Thể loại</th>
+              </tr>
+            </thead>
+            <tbody>
+              {books.map((book, index) => (
+                <tr key={index}>
+                  <td>{book.name}</td>
+                  <td>{book.quantity}</td>
+                  <td>{book.cost}</td>
+                  <td>{book.price}</td>
+                  <td>{book.position}</td>
+                  <td>{book.category}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );
