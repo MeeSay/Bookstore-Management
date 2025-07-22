@@ -114,3 +114,24 @@ app.post("/searchBook", (req, res) => {
     return res.json({ books: data });
   });
 });
+
+app.get("/getPromotions", (req, res) => {
+  const sql = "SELECT * FROM promotion";
+  db.query(sql, (err, data) => {
+    if (err) {
+      return res.json({ message: "Database error", error: err.message });
+    }
+    return res.json(data);
+  });
+});
+
+app.post("/createPromotion", (req, res) => {
+  const sql = "INSERT INTO promotion (name, detail, start, end) VALUES (?, ?, ?, ?)";
+  const values = [req.body.name, req.body.detail, req.body.startDate, req.body.endDate];
+  db.query(sql, values, (err, data) => {
+    if (err) {
+      return res.json({ message: "Database error", error: err.message });
+    }
+    return res.json({ message: "Promotion created successfully", data });
+  });
+});
