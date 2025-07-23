@@ -126,8 +126,8 @@ app.get("/getPromotions", (req, res) => {
 });
 
 app.post("/createPromotion", (req, res) => {
-  const sql = "INSERT INTO promotion (name, detail, start, end) VALUES (?, ?, ?, ?)";
-  const values = [req.body.name, req.body.detail, req.body.startDate, req.body.endDate];
+  const sql = "INSERT INTO promotion (name, detail, discount, start, end) VALUES (?, ?, ?, ?)";
+  const values = [req.body.name, req.body.detail,req.body.discount, req.body.startDate, req.body.endDate];
   db.query(sql, values, (err, data) => {
     if (err) {
       return res.json({ message: "Database error", error: err.message });

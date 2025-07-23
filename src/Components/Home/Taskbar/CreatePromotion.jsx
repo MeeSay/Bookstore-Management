@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
 import "./HomePage.css"; // Assuming you have a CSS file for styling
 import axios from "axios";
+import {format} from 'date-fns';
 
 const CreatePromotion = () => {
   const [name, setName] = useState("");
   const [detail, setDetail] = useState("");
+  const [discount, setDiscount] = useState("")
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [promotions, setPromotions] = useState([]);
@@ -15,6 +17,7 @@ const CreatePromotion = () => {
       .get("http://localhost:3001/getPromotions")
       .then((res) => {
         setPromotions(res.data);
+        console.log(res.data);
       })
       .catch((err) => console.log("Lỗi khi lấy dữ liệu:", err));
   }, [success]);
@@ -27,7 +30,7 @@ const CreatePromotion = () => {
 
   const handleCreatePromotion = (e) => {
     e.preventDefault();
-    if (!name || !detail || !startDate || !endDate) {
+    if (!name || !detail || !startDate || !endDate ||!discount) {
       setError("Hãy điền đầy đủ thông tin");
       return;
     }
@@ -39,6 +42,7 @@ const CreatePromotion = () => {
       .post("http://localhost:3001/createPromotion", {
         name,
         detail,
+        discount,
         startDate,
         endDate,
       })
@@ -74,6 +78,14 @@ const CreatePromotion = () => {
             onChange={(e) => setDetail(e.target.value)}
           />
 
+          <div className="text">Giảm giá (%)</div>
+          <input
+            type="text"
+            placeholder={"Phần trăm giảm giá"}
+            autoComplete="off"
+            onChange={(e) => setDiscount(e.target.value)}
+          />
+
           <div className="text">Thời gian bắt đầu</div>
           <input
             type="date"
@@ -105,6 +117,7 @@ const CreatePromotion = () => {
                 <tr>
                   <th>Tên chương trình</th>
                   <th>Mô tả</th>
+                  <th>Giảm giá</th>
                   <th>Bắt đầu</th>
                   <th>Kết thúc</th>
                 </tr>
@@ -114,8 +127,9 @@ const CreatePromotion = () => {
                   <tr key={index}>
                     <td>{promotion.name}</td>
                     <td>{promotion.detail}</td>
-                    <td>{promotion.startDate}</td>
-                    <td>{promotion.endDate}</td>
+                    <td>{promotion.discount}</td>
+                    <td>{format(new Date(promotion.start), 'dd/MM/yyyy')}</td>
+                    <td>{format(new Date(promotion.end), 'dd/MM/yyyy')}</td>
                   </tr>
                 ))}
               </tbody>

@@ -235,4 +235,9 @@ td {
 tbody {
   width: 100%;
   max-height: 500px;
+}
+
+.bill .table {
+  height: 300px;
+  width: 500px;
 }/*# sourceMappingURL=HomePage.css.map */

@@ -36,7 +36,7 @@ const SearchBook = () => {
             console.log("Database error:", res.data.error);
             return;
           }
-          if(res.data.message === "No books found") {
+          if (res.data.message === "No books found") {
             setError("Không tìm thấy sách nào");
             return;
           }
@@ -51,7 +51,11 @@ const SearchBook = () => {
     <div className="search">
       <div className="title">Search</div>
       <div className="search-input">
-        <input type="text" placeholder="Search for a book..." onChange={(e) => setSearchBook(e.target.value)} />
+        <input
+          type="text"
+          placeholder="Search for a book..."
+          onChange={(e) => setSearchBook(e.target.value)}
+        />
         <button type="submit" onClick={handleSearch}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
