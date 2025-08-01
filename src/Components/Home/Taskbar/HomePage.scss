@@ -240,3 +240,20 @@ tbody{
     width: 500px;
   }
 }
+
+select{
+  width: 190px;
+  height: 30px;
+  background-color: azure;
+  border: solid 2px #333333;
+  padding-left: 5px;
+  margin-top: 6px;
+}
+
+.button-error{
+  display:flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: column;
+  height: 50px;
+}

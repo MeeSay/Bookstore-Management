@@ -49,8 +49,16 @@ app.post("/login", (req, res) => {
 });
 
 app.post("/importbook", (req, res) => {
-  const sql = "INSERT INTO book (name, quantity, cost, price, category, position) VALUES (?, ?, ?, ?, ?, ?)";
-  const values = [req.body.name, req.body.quantity, req.body.cost, req.body.price, req.body.category, req.body.position];
+  const sql =
+    "INSERT INTO book (name, quantity, cost, price, category, position) VALUES (?, ?, ?, ?, ?, ?)";
+  const values = [
+    req.body.name,
+    req.body.quantity,
+    req.body.cost,
+    req.body.price,
+    req.body.category,
+    req.body.position,
+  ];
   db.query(sql, values, (err, data) => {
     if (err) {
       return res.json({ message: "Database error", error: err.message });
@@ -108,7 +116,7 @@ app.post("/searchBook", (req, res) => {
     if (err) {
       return res.json({ message: "Database error", error: err.message });
     }
-    if(data.length === 0) {
+    if (data.length === 0) {
       return res.json({ message: "No books found" });
     }
     return res.json({ books: data });
@@ -126,12 +134,50 @@ app.get("/getPromotions", (req, res) => {
 });
 
 app.post("/createPromotion", (req, res) => {
-  const sql = "INSERT INTO promotion (name, detail, discount, start, end) VALUES (?, ?, ?, ?)";
-  const values = [req.body.name, req.body.detail,req.body.discount, req.body.startDate, req.body.endDate];
+  const sql =
+    "INSERT INTO promotion (name, detail, discount, start, end) VALUES (?, ?, ?, ?)";
+  const values = [
+    req.body.name,
+    req.body.detail,
+    req.body.discount,
+    req.body.startDate,
+    req.body.endDate,
+  ];
   db.query(sql, values, (err, data) => {
     if (err) {
       return res.json({ message: "Database error", error: err.message });
     }
     return res.json({ message: "Promotion created successfully", data });
+  });
+});
+
+app.get("/getBills", (req, res) => {
+  const sql = "select count(*) as total from bill";
+  db.query(sql, (err, data) => {
+    if (err) {
+      return res.json({ message: "Database error", error: err.message });
+    }
+    return res.json({ message: "get length bill success", data });
+  });
+});
+
+
+app.post("/saveBill", (req, res) => {
+  const newBill = req.body.newBill;
+  if (!newBill || !newBill.id || !newBill.date || !newBill.total) {
+    return res.status(400).json({ message: "Invalid data: newBill is missing or incomplete" });
+  }
+  const sql =
+    "INSERT INTO bill (id, date, total) VALUES (?, ?, ?)";
+  const values = [
+    newBill.id,
+    newBill.date,
+    newBill.total,
+  ];
+  db.query(sql, values, (err, data) => {
+    if (err) {
+      return res.json({ message: "Database error", error: err.message });
+    }
+    return res.json({ message: "Bill saved successfully", data });
   });
 });
