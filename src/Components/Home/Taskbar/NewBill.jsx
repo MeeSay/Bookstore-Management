@@ -4,8 +4,10 @@ import { format } from "date-fns";
 import "./HomePage.css";
 
 const NewBill = () => {
+  // format của 1 sản phẩm được mua
   const [formData, setFormData] = useState({
     name: "",
+    bookid: "",
     price: "",
     quantity: "",
     date: "",
@@ -17,7 +19,7 @@ const NewBill = () => {
   //   total: "",
   // });
 
-  const [bills, setBills] = useState([]);
+  const [bills, setBills] = useState([]); // hóa đơn
   const [books, setBooks] = useState([]);
   const [error, setError] = useState("");
 
@@ -56,6 +58,7 @@ const NewBill = () => {
     if (selectedBook) {
       setFormData({
         name: selectedName,
+        bookid: selectedBook.ID || "",
         price: selectedBook.price || "",
         quantity: formData.quantity || "1", // Mặc định số lượng là 1
         date: formData.date || format(new Date(), "yyyy-MM-dd"), // Mặc định ngày hiện tại
@@ -99,6 +102,7 @@ const NewBill = () => {
       const quantity = parseInt(bill.quantity) || 0;
       return sum + price * quantity;
     }, 0);
+
     try {
       const response = await axios.get("http://localhost:3001/getBills");
       const tmpBills = {
@@ -106,15 +110,16 @@ const NewBill = () => {
         total: total,
         date: format(new Date(), "yyyy-MM-dd"),
       };
-      
+
       // setNewBill({
       //   id: response.data.data[0].total + 1,
       //   total: total,
       //   date: format(new Date(), "yyyy-MM-dd"),
       // });
-
+      // console.log(bills, tmpBills);
       const saveResponse = await axios.post("http://localhost:3001/saveBill", {
         newBill: tmpBills,
+        bills,
       });
 
       alert("Lưu thành công!");

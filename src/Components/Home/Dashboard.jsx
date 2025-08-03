@@ -96,7 +96,7 @@ const Dashboard = () => {
                 type="button"
                 onClick={() => setAction("search customer")}
               >
-                Tra cứu khách hàng
+                Tra cứu khách
               </button>
             </li>
             <li>

@@ -161,23 +161,53 @@ app.get("/getBills", (req, res) => {
   });
 });
 
+// app.post("/saveBill", (req, res) => {
+//   const newBill = req.body.newBill;
+//   if (!newBill || !newBill.id || !newBill.date || !newBill.total) {
+//     return res.status(400).json({ message: "Invalid data: newBill is missing or incomplete" });
+//   }
+//   const sql =
+//     "INSERT INTO bill (id, date, total) VALUES (?, ?, ?)";
+//   const values = [
+//     newBill.id,
+//     newBill.date,
+//     newBill.total,
+//   ];
+//   db.query(sql, values, (err, data) => {
+//     if (err) {
+//       return res.json({ message: "Database error", error: err.message });
+//     }
+//     return res.json({ message: "Bill saved successfully", data });
+//   });
+// });
 
 app.post("/saveBill", (req, res) => {
   const newBill = req.body.newBill;
+  const detailBill = req.body.bills;
   if (!newBill || !newBill.id || !newBill.date || !newBill.total) {
-    return res.status(400).json({ message: "Invalid data: newBill is missing or incomplete" });
+    return res
+      .status(400)
+      .json({ message: "Invalid data: newBill is missing or incomplete" });
   }
-  const sql =
-    "INSERT INTO bill (id, date, total) VALUES (?, ?, ?)";
-  const values = [
+  const sql = "INSERT INTO bill (id, date, total) VALUES (?, ?, ?)";
+  const sql2 =
+    "INSERT INTO billdetail (BillID, BookID, quantity, price) VALUES ?";
+  const values = [newBill.id, newBill.date, newBill.total];
+  const value2 = detailBill.map((bill) => [
     newBill.id,
-    newBill.date,
-    newBill.total,
-  ];
+    bill.bookid,
+    bill.quantity,
+    bill.price,
+  ]);
+
   db.query(sql, values, (err, data) => {
     if (err) {
       return res.json({ message: "Database error", error: err.message });
     }
-    return res.json({ message: "Bill saved successfully", data });
+    db.query(sql2, [value2], (err, data) => {
+      if (err)
+        return res.json({ message: "Lỗi cơ sở dữ liệu", error: err.message });
+      return res.json({ message: "Lưu các hóa đơn thành công" });
+    });
   });
 });
